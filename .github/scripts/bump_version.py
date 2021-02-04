@@ -48,7 +48,7 @@ def main(args):
         push_commit = args.auto_push
     else:
         allowed_bump_types = ['major', 'minor', 'patch', 'release', 'build']
-        bump_msg_match = re.match((r'\*\*\*BUMP (\w+)\*\*\*', args.commit_msg)
+        bump_msg_match = re.match(r'\*\*\*BUMP (\w+)\*\*\*', args.commit_msg)
 
         if bump_msg_match:
             bump_msg_type = bump_msg_match.group(1).lower()
