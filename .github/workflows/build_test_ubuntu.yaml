@@ -23,14 +23,14 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: x64
       - name: Bump version
-        run: python "${{env.GITHUB_WORKSPACE}}/.github/scripts/bump_version.py" --commit-msg "${{github.event.head_commit.message}}"
+        run: python "${{github.workspace}}/.github/scripts/bump_version.py" --commit-msg "${{github.event.head_commit.message}}"
         shell: bash
         working-directory: ${{env.working-directory}}
       - name: install snappy
         run: sudo apt-get install libsnappy-dev
         shell: bash
       - name: Build and install package
-        uses: "${{env.GITHUB_WORKSPACE}}/.github/actions/build-install-package"
+        uses: "${{github.workspace}}/.github/actions/build-install-package"
       - name: run unit tests
         run: pytest
         working-directory: "${{env.working-directory}}/tests"
