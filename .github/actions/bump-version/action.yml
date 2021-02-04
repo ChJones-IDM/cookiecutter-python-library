@@ -12,12 +12,12 @@ runs:
   using: "composite"
   steps:
     - name: bump minor version
+      if: "contains(github.event.head_commit.message, '***BUMP MINOR***')"
       run: echo "::set-env name=bump_type::minor"
-      if: contains(github.event.head_commit.message, '***BUMP MINOR***')
       shell: bash
     - name: bump major version
+      if: "contains(github.event.head_commit.message, '***BUMP MAJOR***')"
       run: echo "::set-env name=bump_type::major"
-      if: contains(github.event.head_commit.message, '***BUMP MAJOR***')
       shell: bash
     - name: Config github user
       run: |
