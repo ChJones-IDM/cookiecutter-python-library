@@ -36,6 +36,8 @@ def main(args):
     Returns:
         bool: success
     """
+
+    # detect what type of version to bump based on commit message, default to 'patch'
     bump_type = None
     if '***BUMP MAJOR***' in args.commit_msg:
         bump_type = 'major'
@@ -43,7 +45,12 @@ def main(args):
         bump_type = 'minor'
     elif '***BUMP PATCH***' in args.commit_msg:
         bump_type = 'patch'
-    
+
+    # determine whether to push the bump version commit, this is a little convoluted because of 
+    # gh actions weirdness normally every commit to a 'release' branch should push the version 
+    # bump of the patch version, but we also want to allow for explicit updates based on commit
+    # message from a separate workflow, but in that case we want to skip the push from the publish
+    # workflow
     push_commit = False
     if bump_type:
         push_commit = args.push_allowed
@@ -52,7 +59,6 @@ def main(args):
         push_commit = args.auto_push_patch
 
     # bump version
-    #pip install setuptools wheel twine bump2version
     call(['pip', 'install', 'bump2version'])
     call(['bumpversion', '--allow-dirty', '--config-file .bump_version.cfg', bump_type])
 

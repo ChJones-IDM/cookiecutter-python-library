@@ -37,7 +37,7 @@ jobs:
         working-directory: ./tests
       - name: twine upload
         if: success()
-        run: twine upload --verbose --repository-url https://packages.idmod.org/api/pypi/idm-pypi-staging/ --username ${{ secrets.ARTIFACTORY_USER }} --password ${{ secrets.ARTIFACTORY_TOKEN }} ${{ steps.build-install.outputs.wheel-file }}
+        run: twine upload --verbose --repository-url https://packages.idmod.org/api/pypi/idm-pypi-staging/ --username ${{ secrets.PYPI_STAGING_USERNAME }} --password ${{ secrets.PYPI_STAGING_PASSWORD }} ${{ steps.build-install.outputs.wheel-file }}
       - name: Add wheel artifact
         if: success()
         uses: actions/upload-artifact@v2
