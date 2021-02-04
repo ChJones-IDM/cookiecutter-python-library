@@ -4,6 +4,12 @@ on:
     branches:
       - release*
       - master
+  workflow_run:
+    workflows: ["bump_version", "bump_patch_version"]
+    branches: [main]
+    types: 
+      - completed
+      - requested
 jobs:
   build_test_publish:
     runs-on: ubuntu-latest
@@ -27,8 +33,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - name: Bump version
-        run: python "${{github.workspace}}/.github/scripts/bump_version.py" --commit-msg "${{github.event.head_commit.message}}"
       - name: install snappy
         run: sudo apt-get install libsnappy-dev
       - name: Build and install package

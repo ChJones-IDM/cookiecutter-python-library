@@ -1,0 +1,30 @@
+name: Automaticall bump patch version.
+on:
+  push:
+    branches:
+      - release*
+      - master
+jobs:
+  bump_version:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: "./{{ cookiecutter.library_name }}"
+    if: "!contains(github.event.head_commit.message, '***BUMP ')"
+    strategy:
+      max-parallel: 1
+      matrix:
+        python-version: [ '3.6' ]
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@master
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - name: Bump version
+        run: python "${{github.workspace}}/.github/scripts/bump_version.py" --commit-msg "${{github.event.head_commit.message}}" --bump-type patch --auto-push
+

@@ -2,6 +2,12 @@ name: Package and test on windows
 on:
   push:
   pull_request:
+  workflow_run:
+    workflows: ["bump_version", "bump_patch_version"]
+    branches: [main]
+    types: 
+      - completed
+      - requested
 jobs:
   build_test_windows:
     runs-on: windows-latest
@@ -25,8 +31,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - name: Bump version
-        run: python "${{github.workspace}}/.github/scripts/bump_version.py" --commit-msg "${{github.event.head_commit.message}}"
       - name: Build and install package
         uses: "./.github/actions/build-install-package"
         with:

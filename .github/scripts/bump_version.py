@@ -22,7 +22,8 @@ def get_argparser(parser=None):
         parser = argparse.ArgumentParser(description='')
 
     parser.add_argument('--commit-msg', required=True, help='Commit message.')
-    parser.add_argument('--auto-push-patch', action='store_true', help='Push automatic patch version bump.')
+    parser.add_argument('--bump-type', help='Type: major, minor, patch, release, build')
+    parser.add_argument('--auto-push', action='store_true', help='Push automatic version bump (when type specified).')
     parser.add_argument('--push-allowed', action='store_true', help='Allow push of bump version based on commit msg trigger.')
     parser.add_argument('--config-file', default='.bumpversion.cfg', help='Allow push of bump version based on commit msg trigger.')
 
@@ -40,23 +41,20 @@ def main(args):
     """
 
     # detect what type of version to bump based on commit message, default to 'patch'
-    bump_type = None
-
-    allowed_bump_types = ['major', 'minor', 'patch', 'release', 'build']
-    bump_msg_match = re.match((r'\*\*\*BUMP (\w+)\*\*\*', args.commit_msg)
-
-    if bump_msg_match:
-        bump_msg_type = bump_msg_match.group(1).lower()
-        if bump_msg_type in allowed:
-            bump_type = bump_msg_type
-            
-
+    bump_type = args.bump_type
     push_commit = False
+
     if bump_type:
+        push_commit = args.auto_push
+    else bump_type:
+        allowed_bump_types = ['major', 'minor', 'patch', 'release', 'build']
+        bump_msg_match = re.match((r'\*\*\*BUMP (\w+)\*\*\*', args.commit_msg)
+
+        if bump_msg_match:
+            bump_msg_type = bump_msg_match.group(1).lower()
+            if bump_msg_type in allowed:
+                bump_type = bump_msg_type
         push_commit = args.push_allowed
-    else:
-        bump_type = 'patch'
-        push_commit = args.auto_push_patch
 
     # bump version
     call(['pip', 'install', 'bump2version'])
