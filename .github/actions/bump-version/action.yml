@@ -5,19 +5,18 @@ inputs:
     description: 'Whether to push the bump version commit.'
     required: false
     default: false
+env:
+  bump_type: "patch"
+  auto_push: "contains(github.event.head_commit.message, '***BUMP MAJOR***') || contains(github.event.head_commit.message, '***BUMP MINOR***') || contains(github.event.head_commit.message, '***BUMP PATCH***')"
 runs:
   using: "composite"
   steps:
-    - env:
-      bump_type: "patch"
-    - env:
-      bump_type: "minor"
-      if: "contains(github.event.head_commit.message, '***BUMP MINOR***')"
-    - env:
-      bump_type: "major"
-      if: "contains(github.event.head_commit.message, '***BUMP MAJOR***')"
-    - env:
-      auto_push: "contains(github.event.head_commit.message, '***BUMP MAJOR***') || contains(github.event.head_commit.message, '***BUMP MINOR***') || contains(github.event.head_commit.message, '***BUMP PATCH***')"
+    - name: Set minor version bump type
+      - if: "contains(github.event.head_commit.message, '***BUMP MINOR***')"
+      - run: echo "::set-env name=bump_type::minor"
+    - name: Set major version bump type
+      - if: "contains(github.event.head_commit.message, '***BUMP MAJOR***')"
+      - run: echo "::set-env name=bump_type::major"
     - name: Config github user
       run: |
         git config --global user.email "idm_bamboo_user@idmod.org"
