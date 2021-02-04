@@ -32,8 +32,8 @@ jobs:
         shell: bash
       - id: build-install
         name: Build and install package
-      - name: Build and install package
         uses: "${{github.workspace}}/.github/actions/build-install-package"
+        working-directory: ${{env.working-directory}}
       - name: run unit tests
         run: pytest
         working-directory: "${{env.working-directory}}/tests"
