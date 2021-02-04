@@ -44,11 +44,12 @@ def main(args):
     elif '***BUMP PATCH***' in args.commit_msg:
         bump_type = 'patch'
     
-    push_commit = args.push
+    push_commit = False
     if bump_type:
-        push_commit |= args.push_allowed
+        push_commit = args.push_allowed
     else:
         bump_type = 'patch'
+        push_commit = args.auto_push_patch
 
     # bump version
     call(['bumpversion', '--allow-dirty', '--confi-file .bump_version.cfg', bump_type])
