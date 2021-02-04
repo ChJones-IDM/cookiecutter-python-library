@@ -7,8 +7,10 @@ on:
 jobs:
   build_test_publish:
     runs-on: ubuntu-latest
-    env: 
-      working-directory: "./{{ cookiecutter.library_name }}"
+    defaults:
+      run:
+        shell: bash
+        working-directory: "./{{ cookiecutter.library_name }}"
     if: "!contains(github.event.head_commit.message, '***SKIPBUILD***')"
     strategy:
       max-parallel: 1
@@ -25,11 +27,9 @@ jobs:
           architecture: x64
       - name: Bump version
         run: python "${{github.workspace}}/.github/scripts/bump_version.py" --commit-msg "${{github.event.head_commit.message}}"
-        shell: bash
         working-directory: ${{env.working-directory}}
       - name: install snappy
         run: sudo apt-get install libsnappy-dev
-        shell: bash
       - id: build-install
         name: Build and install package
         uses: "./.github/actions/build-install-package"
