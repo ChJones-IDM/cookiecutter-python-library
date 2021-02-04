@@ -25,10 +25,8 @@ jobs:
           architecture: x64
       - name: Bump version
         run: python "${{github.workspace}}/.github/scripts/bump_version.py" --commit-msg "${{github.event.head_commit.message}}"
-        working-directory: ${{env.working-directory}}
       - name: Build and install package
         uses: "./.github/actions/build-install-package"
-        working-directory: ${{env.working-directory}}
       - name: run unit tests
         run: pytest
-        working-directory: "${{env.working-directory}}/tests"
+        working-directory: "./tests"

@@ -27,16 +27,14 @@ jobs:
           architecture: x64
       - name: Bump version
         run: python "${{github.workspace}}/.github/scripts/bump_version.py" --commit-msg "${{github.event.head_commit.message}}"
-        working-directory: ${{env.working-directory}}
       - name: install snappy
         run: sudo apt-get install libsnappy-dev
       - id: build-install
         name: Build and install package
         uses: "./.github/actions/build-install-package"
-        working-directory: ${{env.working-directory}}
       - name: run unit tests
         run: pytest
-        working-directory: "${{env.working-directory}}/tests"
+        working-directory: "./tests"
       - name: twine upload
         if: success()
         run: twine upload --verbose --repository-url https://packages.idmod.org/api/pypi/idm-pypi-staging/ --username ${{ secrets.PYPI_STAGING_USERNAME }} --password ${{ secrets.PYPI_STAGING_PASSWORD }} ${{ steps.build-install.outputs.wheel-file }}
