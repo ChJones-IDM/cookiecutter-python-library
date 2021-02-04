@@ -1,0 +1,34 @@
+name: Package and test on Ubuntu
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+jobs:
+  build_test_ubuntu:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '***SKIPBUILD***')"
+    strategy:
+      max-parallel: 1
+      matrix:
+        python-version: [ '3.6', '3.7', '3.8' ]
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@master
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - name: Bump version
+        uses: ./.github/actions/bump-version
+      - name: install snappy
+        run: sudo apt-get install libsnappy-dev
+        shell: bash
+      - name: Build and install package
+        uses: ./.github/actions/build-install-package
+        with:
+          package_file: 'package_setup.py'
+      - name: run unit tests
+        run: python -m unittest discover .
+        working-directory: ./tests

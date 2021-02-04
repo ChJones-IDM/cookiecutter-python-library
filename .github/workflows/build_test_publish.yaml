@@ -1,0 +1,47 @@
+name: Package, test, and publish
+on:
+  push:
+    branches:
+      - release*
+      - master
+jobs:
+  build_test_publish:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '***SKIPBUILD***')"
+    strategy:
+      max-parallel: 1
+      matrix:
+        python-version: [ '3.6' ]
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@master
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - name: Bump version
+        uses: ./.github/actions/bump-version
+        with:
+          push_commit: true
+      - name: install snappy
+        run: sudo apt-get install libsnappy-dev
+        shell: bash
+      - id: build-install
+        name: Build and install package
+        uses: ./.github/actions/build-install-package
+        with:
+          package_file: 'package_setup.py'
+      - name: run unit tests
+        run: python -m unittest discover .
+        working-directory: ./tests
+      - name: twine upload
+        if: success()
+        run: twine upload --verbose --repository-url https://packages.idmod.org/api/pypi/idm-pypi-staging/ --username ${{ secrets.ARTIFACTORY_USER }} --password ${{ secrets.ARTIFACTORY_TOKEN }} ${{ steps.build-install.outputs.wheel-file }}
+      - name: Add wheel artifact
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheel file
+          path: ${{ steps.build-install.outputs.wheel-file }}
