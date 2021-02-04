@@ -12,13 +12,13 @@ runs:
   using: "composite"
   steps:
     - name: bump minor version
-      if: "contains(github.event.head_commit.message, '***BUMP MINOR***')"
       run: echo "::set-env name=bump_type::minor"
       shell: bash
+      if: "contains(github.event.head_commit.message, '***BUMP MINOR***')"
     - name: bump major version
-      if: "contains(github.event.head_commit.message, '***BUMP MAJOR***')"
       run: echo "::set-env name=bump_type::major"
       shell: bash
+      if: "contains(github.event.head_commit.message, '***BUMP MAJOR***')"
     - name: Config github user
       run: |
         git config --global user.email "idm_bamboo_user@idmod.org"
@@ -36,6 +36,6 @@ runs:
         git config --global user.name "BambooUser-IDM"
       shell: bash
     - name: Push verison update
-      if: "${{ env.push_commit }} && !${{ env.auto_push }}"
       run: git push
       shell: bash
+      if: "${{ env.push_commit }} && !${{ env.auto_push }}"
