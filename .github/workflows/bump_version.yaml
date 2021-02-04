@@ -6,6 +6,8 @@ on:
 jobs:
   bump_version:
     runs-on: ubuntu-latest
+    env: 
+      working-directory: "./{{ cookiecutter.library_name }}"
     if: "contains(github.event.head_commit.message, '***BUMP MAJOR***') || contains(github.event.head_commit.message, '***BUMP MINOR***') || contains(github.event.head_commit.message, '***BUMP PATCH***')"
     strategy:
       max-parallel: 1
@@ -21,5 +23,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: x64
       - name: Bump version
-        run: python ./.github/scripts/bump_version.py --commit-msg "${{github.event.head_commit.message}}" --push-allowed
+        run: python ../.github/scripts/bump_version.py --commit-msg "${{github.event.head_commit.message}}" --push-allowed
         shell: bash
+        working-directory: ${{env.working-directory}}
+

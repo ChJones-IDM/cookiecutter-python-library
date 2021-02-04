@@ -4,7 +4,7 @@ inputs:
   package_file:
     description: 'Path to package setup python script.'
     required: false
-    default: 'package_setup.py'
+    default: '__init__.py'
 outputs:
   wheel-file:
     description: "Wheel filename"
@@ -16,7 +16,7 @@ runs:
       run: python -m pip install setuptools wheel twine
       shell: bash
     - name: Add IDM artifactory end-point to pip config
-      run: python ./.github/scripts/update_pip_conf.py
+      run: python ../.github/scripts/update_pip_conf.py
       shell: bash
     - name: build wheel
       run: python ${{ inputs.package_file }} bdist_wheel
