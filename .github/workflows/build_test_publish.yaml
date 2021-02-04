@@ -22,9 +22,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: x64
       - name: Bump version
-        uses: ./.github/actions/bump-version
-        with:
-          push_commit: true
+        run: python ./.github/scripts/bump_version.py --commit-msg "${{github.event.head_commit.message}}" --auto-push-patch
+        shell: bash
       - name: install snappy
         run: sudo apt-get install libsnappy-dev
         shell: bash
