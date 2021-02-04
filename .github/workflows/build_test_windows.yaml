@@ -5,10 +5,12 @@ on:
 jobs:
   build_test_windows:
     runs-on: windows-latest
+    env:
+      working-directory: "./{{ cookiecutter.library_name }}"
     defaults:
       run:
         shell: bash
-        working-directory: "./{{ cookiecutter.library_name }}"
+        working-directory: "${{env.working-directory}}"
     if: "!contains(github.event.head_commit.message, '***SKIPBUILD***')"
     strategy:
       max-parallel: 1
@@ -27,6 +29,8 @@ jobs:
         run: python "${{github.workspace}}/.github/scripts/bump_version.py" --commit-msg "${{github.event.head_commit.message}}"
       - name: Build and install package
         uses: "./.github/actions/build-install-package"
+        with:
+          working_directory: "${{ env.working-directory }}"
       - name: run unit tests
         run: pytest
         working-directory: "./tests"
