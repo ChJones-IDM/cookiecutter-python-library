@@ -23,6 +23,7 @@ def get_argparser(parser=None):
     parser.add_argument('--commit-msg', required=True, help='Commit message.')
     parser.add_argument('--auto-push-patch', action='store_true', help='Push automatic patch version bump.')
     parser.add_argument('--push-allowed', action='store_true', help='Allow push of bump version based on commit msg trigger.')
+    parser.add_argument('--config-file', default='.bumpversion.cfg', help='Allow push of bump version based on commit msg trigger.')
 
     return parser
 
@@ -60,7 +61,7 @@ def main(args):
 
     # bump version
     call(['pip', 'install', 'bump2version'])
-    call(['bumpversion', '--allow-dirty', '--config-file .bump_version.cfg', bump_type])
+    call(['bumpversion', '--allow-dirty', '--config-file ' + args.config_file, bump_type])
 
     # push commit if allowed
     if push_commit:
