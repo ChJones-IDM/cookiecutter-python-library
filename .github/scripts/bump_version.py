@@ -52,7 +52,9 @@ def main(args):
         push_commit = args.auto_push_patch
 
     # bump version
-    call(['bumpversion', '--allow-dirty', '--confi-file .bump_version.cfg', bump_type])
+    #pip install setuptools wheel twine bump2version
+    call(['pip', 'install', 'bump2version'])
+    call(['bumpversion', '--allow-dirty', '--config-file .bump_version.cfg', bump_type])
 
     # push commit if allowed
     if push_commit:
