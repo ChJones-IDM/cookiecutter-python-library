@@ -6,6 +6,7 @@ on:
 jobs:
   bump_version:
     runs-on: ubuntu-latest
+    defaults:
       run:
         shell: bash
         working-directory: "./{{ cookiecutter.library_name }}"
