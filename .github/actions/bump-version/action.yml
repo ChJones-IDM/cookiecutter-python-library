@@ -1,12 +1,12 @@
-name: "Bump version"
-description: "Bump package version number automatically"
+name: Bump version
+description: Bump package version number automatically
 inputs:
   push_commit:
-    description: 'Whether to push the bump version commit.'
+    description: Whether to push the bump version commit.
     required: false
     default: false
 env:
-  bump_type: "patch"
+  bump_type: patch
   auto_push: "contains(github.event.head_commit.message, '***BUMP MAJOR***') || contains(github.event.head_commit.message, '***BUMP MINOR***') || contains(github.event.head_commit.message, '***BUMP PATCH***')"
 runs:
   using: "composite"
