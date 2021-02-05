@@ -6,7 +6,7 @@ import os
 import argparse
 import re
 from sys import exit, stderr
-from subprocess import call
+from subprocess import check_call
 
 
 def get_argparser(parser=None):
@@ -61,21 +61,22 @@ def main(args):
     
 
     # bump version
-    call(['pip', 'install', 'bump2version'])
+    check_call(['pip', 'install', 'bump2version'])
 
-    bumpversion_cmd = ['bump2version', '--allow-dirty', '--config-file ' + args.config_file, bump_part]
+    bumpversion_cmd = ['bump2version', '--allow-dirty', '--config-file ' + args.config_file]
     if push_commit:
         bumpversion_cmd.append('--commit')
+    bumpversion_cmd.append(bump_part)
     print(' '.join(bumpversion_cmd))
-    call(bumpversion_cmd)
+    check_call(bumpversion_cmd)
 
     # push commit if allowed
     if push_commit:
         # git config
         print('Pushing bump version commit.')
-        call(['git', 'config', '--global', 'user.email', '"idm_bamboo_user@idmod.org"'])
-        call(['git', 'config', '--global', 'user.name', '"BambooUser-IDM"'])
-        call(['git', 'push'])
+        check_call(['git', 'config', '--global', 'user.email', '"idm_bamboo_user@idmod.org"'])
+        check_call(['git', 'config', '--global', 'user.name', '"BambooUser-IDM"'])
+        check_call(['git', 'push'])
 
     return True
 
