@@ -65,8 +65,8 @@ def main(args):
 
     bumpversion_cmd = ['bump2version', '--allow-dirty', '--config-file ' + args.config_file, bump_part]
     if push_commit:
-        bumpversion_cmd += '--commit'
-    print('Running bump version cmd: ', ' '.join(bumpversion_cmd))
+        bumpversion_cmd.append('--commit')
+    print(' '.join(bumpversion_cmd))
     call(bumpversion_cmd)
 
     # push commit if allowed
