@@ -63,10 +63,11 @@ def main(args):
     # bump version
     call(['pip', 'install', 'bump2version'])
 
-    bumpversion_cmds = ['bump2version', '--allow-dirty', '--config-file ' + args.config_file, bump_part]
+    bumpversion_cmd = ['bump2version', '--allow-dirty', '--config-file ' + args.config_file, bump_part]
     if push_commit:
-        bumpversion_cmds += '--commit'
-    call(bumpversion_cmds)
+        bumpversion_cmd += '--commit'
+    print('Running bump version cmd: ', ' '.join(bumpversion_cmd))
+    call(bumpversion_cmd)
 
     # push commit if allowed
     if push_commit:
