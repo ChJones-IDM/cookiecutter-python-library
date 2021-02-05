@@ -52,7 +52,7 @@ def main(args):
 
         if bump_msg_match:
             bump_msg_type = bump_msg_match.group(1).lower()
-            if bump_msg_type in allowed:
+            if bump_msg_type in allowed_bump_types:
                 bump_type = bump_msg_type
         push_commit = args.push_allowed
 
