@@ -71,8 +71,9 @@ def main(args):
     # push commit if allowed
     if push_commit:
         # git config
+        print('Pushing bump version commit.')
         call(['git', 'config', '--global', 'user.email', '"idm_bamboo_user@idmod.org"'])
-        call(['git', 'config', '--global', 'user.name', '""BambooUser-IDM""'])
+        call(['git', 'config', '--global', 'user.name', '"BambooUser-IDM"'])
         call(['git', 'push'])
 
     return True
