@@ -64,6 +64,11 @@ def main(args):
     # bump version
     check_call(['pip', 'install', 'bump2version'])
 
+    if push_commit:
+        # git config
+        check_call(['git', 'config', '--global', 'user.email', '"idm_bamboo_user@idmod.org"'])
+        check_call(['git', 'config', '--global', 'user.name', '"BambooUser-IDM"'])
+
     bumpversion_cmd = ['bump2version', '--allow-dirty', '--config-file', args.config_file]
     if push_commit:
         bumpversion_cmd.append('--commit')
@@ -73,10 +78,7 @@ def main(args):
 
     # push commit if allowed
     if push_commit:
-        # git config
         print('Pushing bump version commit.')
-        check_call(['git', 'config', '--global', 'user.email', '"idm_bamboo_user@idmod.org"'])
-        check_call(['git', 'config', '--global', 'user.name', '"BambooUser-IDM"'])
         check_call(['git', 'push'])
 
     return True
