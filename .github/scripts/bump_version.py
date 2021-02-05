@@ -5,7 +5,7 @@ from __future__ import print_function
 import os
 import argparse
 import re
-from sys import exit
+from sys import exit, stderr
 from subprocess import call
 
 
@@ -22,7 +22,7 @@ def get_argparser(parser=None):
         parser = argparse.ArgumentParser(description='')
 
     parser.add_argument('--commit-msg', required=True, help='Commit message.')
-    parser.add_argument('--bump-type', help='Type: major, minor, patch, release, build')
+    parser.add_argument('--bump-part', help='Type: major, minor, patch, release, build')
     parser.add_argument('--auto-push', action='store_true', help='Push automatic version bump (when type specified).')
     parser.add_argument('--push-allowed', action='store_true', help='Allow push of bump version based on commit msg trigger.')
     parser.add_argument('--config-file', default='.bumpversion.cfg', help='Allow push of bump version based on commit msg trigger.')
@@ -41,20 +41,24 @@ def main(args):
     """
 
     # detect what type of version to bump based on commit message, default to 'patch'
-    bump_type = args.bump_type
+    bump_part = args.bump_part
     push_commit = False
 
-    if bump_type:
+    if bump_part:
         push_commit = args.auto_push
     else:
-        allowed_bump_types = ['major', 'minor', 'patch', 'release', 'build']
+        allowed_bump_parts = ['major', 'minor', 'patch', 'release', 'build']
         bump_msg_match = re.match(r'\*\*\*BUMP (\w+)\*\*\*', args.commit_msg)
 
         if bump_msg_match:
-            bump_msg_type = bump_msg_match.group(1).lower()
-            if bump_msg_type in allowed_bump_types:
-                bump_type = bump_msg_type
+            bump_msg_part = bump_msg_match.group(1).lower()
+            if bump_msg_part in allowed_bump_types:
+                bump_part = bump_msg_part
+            else:
+                print(f'Unknown version part for bump2version: {bump_msg_part}', file=stderr)
+                return False
         push_commit = args.push_allowed
+    
 
     # bump version
     call(['pip', 'install', 'bump2version'])
