@@ -1,4 +1,4 @@
-name: Explicitly bump major/minor/patch version.
+name: Explicitly bump version.
 on:
   workflow_dispatch:
   push:

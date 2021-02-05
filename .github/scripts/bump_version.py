@@ -52,7 +52,7 @@ def main(args):
 
         if bump_msg_match:
             bump_msg_part = bump_msg_match.group(1).lower()
-            if bump_msg_part in allowed_bump_types:
+            if bump_msg_part in allowed_bump_parts:
                 bump_part = bump_msg_part
             else:
                 print(f'Unknown version part for bump2version: {bump_msg_part}', file=stderr)
@@ -63,7 +63,10 @@ def main(args):
     # bump version
     call(['pip', 'install', 'bump2version'])
 
-    call(['bump2version', '--allow-dirty', '--config-file ' + args.config_file, bump_type])
+    bumpversion_cmds = ['bump2version', '--allow-dirty', '--config-file ' + args.config_file, bump_part]
+    if push_commit:
+        bumpversion_cmds += '--commit'
+    call(bumpversion_cmds)
 
     # push commit if allowed
     if push_commit:
